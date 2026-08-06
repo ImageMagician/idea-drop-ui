@@ -9,7 +9,9 @@
     "dev": "vite dev --port 3000",
     "generate-routes": "tsr generate",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test":"vitest run",
+    "json-server": "json-server src/data/db.json --port 8000"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -28,6 +30,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "json-server": "^1.0.0-beta.15",
     "typescript": "^6.0.2",
     "vite": "^8.0.0"
   },
