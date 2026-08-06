@@ -1,4 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import {queryOptions, useSuspenseQueries, useSuspenseQuery} from "@tanstack/react-query";
 
 const fetchIdea = async (ideaId: string) => {
   const res = await fetch(`/api/ideas/${ideaId}`);
@@ -6,15 +7,23 @@ const fetchIdea = async (ideaId: string) => {
   return res.json();
 }
 
+const ideaQueryOptions = (ideaId: string) =>
+  queryOptions({
+    queryKey: ['idea', ideaId],
+    queryFn: () => fetchIdea(ideaId)
+  })
+
+
 export const Route = createFileRoute('/ideas/$ideaId/')({
   component: IdeaDetailsPage,
-  loader: async ({ params }) => {
-    return fetchIdea(params.ideaId)
+  loader: async ({ params, context: { queryClient } }) => {
+    return queryClient.ensureQueryData(ideaQueryOptions(params.ideaId))
   }
 })
 
 function IdeaDetailsPage() {
-  const idea = Route.useLoaderData();
+  const { ideaId } = Route.useParams();
+  const { data: idea } = useSuspenseQuery(ideaQueryOptions(ideaId));
   return <div className={`max-w-4xl mx-auto py-8`}>
     <h1 className={`text-2xl font-bold mb-3`}>
       {idea.title}!
