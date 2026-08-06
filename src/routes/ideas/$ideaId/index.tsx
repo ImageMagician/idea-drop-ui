@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import {queryOptions, useSuspenseQueries, useSuspenseQuery} from "@tanstack/react-query";
+import {queryOptions, useSuspenseQuery} from "@tanstack/react-query";
 import type { Idea } from "@/types"
 
 const fetchIdea = async (ideaId: string): Promise<Idea> => {
