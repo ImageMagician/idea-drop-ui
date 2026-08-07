@@ -7,11 +7,10 @@ const Header = () => {
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center space-x-2 text-gray-800">
                     <Link to={`/`} className={`flex items-center space-x-2 test-gray-800`}>
-                        <Lightbulb className="w-6 h-6 text-yellow-500">
-                            <h1 className="text-2xl font-bold">
-                                IdeaDrop
-                            </h1>
-                        </Lightbulb>
+                        <Lightbulb className="w-6 h-6 text-yellow-500" />
+                        <h1 className="text-2xl font-bold">
+                            IdeaDrop
+                        </h1>
                     </Link>
                 </div>
 
