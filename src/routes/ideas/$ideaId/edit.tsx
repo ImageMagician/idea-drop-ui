@@ -1,7 +1,7 @@
 import {createFileRoute, Link, useNavigate} from '@tanstack/react-router'
 import { useState } from 'react'
 import { useMutation, useSuspenseQuery, queryOptions } from '@tanstack/react-query'
-import { fetchIdea} from "#/api/ideas.ts";
+import { fetchIdea, updateIdea } from "#/api/ideas.ts";
 
 const ideaQueryOptions = (id:string) => queryOptions({
     queryKey: ['idea', 'id'],
@@ -23,7 +23,29 @@ function IdeaEditPage() {
     const [title, setTitle]             = useState( idea.title )
     const [summary, setSummary]         = useState( idea.summary )
     const [description, setDescription] = useState( idea.description )
-    const [tags, setTagsInput]          = useState( idea.tags.join(', ') )
+    const [tagsInput, setTagsInput]          = useState( idea.tags.join(', ') )
+
+    const { mutateAsync, isPending } = useMutation({
+        mutationFn: () => updateIdea(ideaId,  {
+            title,
+            summary,
+            description,
+            tags: tagsInput
+                .split(',')
+                .map((t) => t.trim())
+                .filter(Boolean)
+        }),
+        onSuccess: () => {
+            navigate({
+                to: '/ideas/$ideaId', params: {ideaId}
+            })
+        }
+    })
+
+    const handleSubmit = async (e: React.SubmitEvent) => {
+        e.preventDefault()
+        await mutateAsync()
+    }
 
   return (
       <div className="space-y-6">
@@ -40,7 +62,7 @@ function IdeaEditPage() {
           </div>
 
           <form className={`space-y-4`}
-
+                onSubmit={ handleSubmit }
           >
               <div className={`mb-4`}>
                   <label htmlFor="title"
@@ -97,8 +119,8 @@ function IdeaEditPage() {
                          id="tags"
                          name="tags"
                          placeholder="Optional tags, comma separated"
-                         value={tags}
-                         onChange={(e) => setTagsInput(e.target.value)}
+                         value={ tagsInput }
+                         onChange={ (e) => setTagsInput(e.target.value) }
                          className={`w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
               </div>
@@ -106,8 +128,9 @@ function IdeaEditPage() {
                   <button
                       type="submit"
                       className={`block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed`}
+                      disabled={isPending}
                   >
-                      Update Idea
+                      { isPending ? 'Updating...' : 'Update Idea' }
                   </button>
               </div>
           </form>
