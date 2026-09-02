@@ -5,8 +5,8 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import IdeaCard from "#/components/IdeaCard.tsx";
 
 const ideasQueryOptions = queryOptions({
-    queryKey: ['ideas'],
-    queryFn: fetchIdeas,
+    queryKey: ['ideas', { limit:3 }],
+    queryFn: () => fetchIdeas(3),
 })
 
 export const Route = createFileRoute('/')({
@@ -16,9 +16,7 @@ export const Route = createFileRoute('/')({
 
 function Home() {
     const { data: ideas } = useSuspenseQuery(ideasQueryOptions)
-    const latestIdeas = [...ideas]
-        .sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() )
-        .slice(0,3)
+
   return (
       <div
           className="flex flex-col md:flex-row items-start justify-between gap-10 p-6 text-blue-600"
@@ -34,7 +32,7 @@ function Home() {
           <section className="flex-1">
               <h2 className="text-2xl font-semibold mb-4 text-gray-800">Latest Ideas</h2>
               <div className="space-y-6">
-                  { latestIdeas.map((idea) => (
+                  { ideas.map((idea) => (
                       <IdeaCard key={ idea._id } idea={ idea } button={ false } />
                   ))}
               </div>
