@@ -15,13 +15,13 @@ function LoginPage() {
         </h1>
         <form action="" className={`space-y-4`}>
             <input type="text"
-                   className="w-full border border-gray-300 rounded-md p-2"
+                   className="w-full border border-gray-300 hover:border-gray-500 focus-visible:outline-4 focus-visible:outline-blue-200 rounded-md p-2"
                    onChange={(e) => setEmail(e.target.value)}
                    value={email}
                    placeholder="Email address"
             />
-            <input type="text"
-                   className="w-full border border-gray-300 rounded-md p-2"
+            <input type="password"
+                   className="w-full border border-gray-300 hover:border-gray-500 focus-visible:outline-4 focus-visible:outline-blue-200 rounded-md p-2"
                    onChange={(e) => setPassword(e.target.value)}
                    value={password}
                    placeholder="Password"
