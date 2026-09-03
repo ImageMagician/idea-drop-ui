@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IdeasIndexRouteImport } from './routes/ideas/index'
+import { Route as authLoginIndexRouteImport } from './routes/(auth)/login/index'
+import { Route as authRegisterIndexRouteImport } from './routes/(auth)/register/index'
 import { Route as IdeasIdeaIdIndexRouteImport } from './routes/ideas/$ideaId/index'
 import { Route as IdeasIdeaIdEditRouteImport } from './routes/ideas/$ideaId/edit'
 import { Route as IdeasNewIndexRouteImport } from './routes/ideas/new/index'
@@ -20,10 +23,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authRouteRoute = authRouteRouteImport.update({
+  id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IdeasIndexRoute = IdeasIndexRouteImport.update({
   id: '/ideas/',
   path: '/ideas/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const authLoginIndexRoute = authLoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authRegisterIndexRoute = authRegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => authRouteRoute,
 } as any)
 const IdeasIdeaIdIndexRoute = IdeasIdeaIdIndexRouteImport.update({
   id: '/ideas/$ideaId/',
@@ -45,6 +62,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ideas/': typeof IdeasIndexRoute
   '/ideas/$ideaId/edit': typeof IdeasIdeaIdEditRoute
+  '/login/': typeof authLoginIndexRoute
+  '/register/': typeof authRegisterIndexRoute
   '/ideas/$ideaId/': typeof IdeasIdeaIdIndexRoute
   '/ideas/new/': typeof IdeasNewIndexRoute
 }
@@ -52,34 +71,56 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ideas': typeof IdeasIndexRoute
   '/ideas/$ideaId/edit': typeof IdeasIdeaIdEditRoute
+  '/login': typeof authLoginIndexRoute
+  '/register': typeof authRegisterIndexRoute
   '/ideas/$ideaId': typeof IdeasIdeaIdIndexRoute
   '/ideas/new': typeof IdeasNewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/(auth)': typeof authRouteRouteWithChildren
   '/ideas/': typeof IdeasIndexRoute
   '/ideas/$ideaId/edit': typeof IdeasIdeaIdEditRoute
+  '/(auth)/login/': typeof authLoginIndexRoute
+  '/(auth)/register/': typeof authRegisterIndexRoute
   '/ideas/$ideaId/': typeof IdeasIdeaIdIndexRoute
   '/ideas/new/': typeof IdeasNewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/ideas/' | '/ideas/$ideaId/edit' | '/ideas/$ideaId/' | '/ideas/new/'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ideas' | '/ideas/$ideaId/edit' | '/ideas/$ideaId' | '/ideas/new'
-  id:
-    | '__root__'
     | '/'
     | '/ideas/'
     | '/ideas/$ideaId/edit'
+    | '/login/'
+    | '/register/'
+    | '/ideas/$ideaId/'
+    | '/ideas/new/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/ideas'
+    | '/ideas/$ideaId/edit'
+    | '/login'
+    | '/register'
+    | '/ideas/$ideaId'
+    | '/ideas/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/(auth)'
+    | '/ideas/'
+    | '/ideas/$ideaId/edit'
+    | '/(auth)/login/'
+    | '/(auth)/register/'
     | '/ideas/$ideaId/'
     | '/ideas/new/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  authRouteRoute: typeof authRouteRouteWithChildren
   IdeasIndexRoute: typeof IdeasIndexRoute
   IdeasIdeaIdEditRoute: typeof IdeasIdeaIdEditRoute
   IdeasIdeaIdIndexRoute: typeof IdeasIdeaIdIndexRoute
@@ -95,12 +136,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(auth)': {
+      id: '/(auth)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ideas/': {
       id: '/ideas/'
       path: '/ideas'
       fullPath: '/ideas/'
       preLoaderRoute: typeof IdeasIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/login/': {
+      id: '/(auth)/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof authLoginIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/register/': {
+      id: '/(auth)/register/'
+      path: '/register'
+      fullPath: '/register/'
+      preLoaderRoute: typeof authRegisterIndexRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/ideas/$ideaId/': {
       id: '/ideas/$ideaId/'
@@ -126,8 +188,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface authRouteRouteChildren {
+  authLoginIndexRoute: typeof authLoginIndexRoute
+  authRegisterIndexRoute: typeof authRegisterIndexRoute
+}
+
+const authRouteRouteChildren: authRouteRouteChildren = {
+  authLoginIndexRoute: authLoginIndexRoute,
+  authRegisterIndexRoute: authRegisterIndexRoute,
+}
+
+const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
+  authRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  authRouteRoute: authRouteRouteWithChildren,
   IdeasIndexRoute: IdeasIndexRoute,
   IdeasIdeaIdEditRoute: IdeasIdeaIdEditRoute,
   IdeasIdeaIdIndexRoute: IdeasIdeaIdIndexRoute,
