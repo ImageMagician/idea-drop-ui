@@ -18,7 +18,7 @@ function AuthLayout() {
               </p>
           </div>
 
-          <section className="flex-1">
+          <section className="flex-1 text-gray-600">
               <Outlet />
           </section>
       </div>
