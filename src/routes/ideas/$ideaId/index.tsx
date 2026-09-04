@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { queryOptions, useSuspenseQuery, useMutation } from "@tanstack/react-query";
 import { fetchIdea, deleteIdea } from "@/api/ideas.ts";
+import { useAuth } from "@/context/AuthContext"
 
 const ideaQueryOptions = (ideaId: string) =>
     queryOptions({
@@ -20,6 +21,8 @@ function IdeaDetailsPage() {
     const {data: idea} = useSuspenseQuery(ideaQueryOptions(ideaId));
 
     const navigate = useNavigate();
+
+    const { user } = useAuth();
 
     const { mutateAsync: deleteMutate, isPending } = useMutation({
         mutationFn: () => deleteIdea(ideaId),
@@ -49,19 +52,25 @@ function IdeaDetailsPage() {
         <div className="mb-3 text-sm uppercase">
             {idea.tags}
         </div>
-        {/* Edit button */}
-        <Link to='/ideas/$ideaId/edit'
-              params={{ ideaId }}
-              className="inline-block text-sm bg-yellow-500 hover:bg-yellow-600 text-white mt-4 mr-2 px-4 py-2 rounded transition"
-        >
-            Edit
-        </Link>
-        {/* Delete button */}
-        <button
-            onClick={ handleDelete }
-            disabled={ isPending }
-            className="text-sm bg-red-600 hover:bg-red-700 text-white mt-4 px-4 py-2 rounded transition disabled:opacity-50">
-            { isPending ? 'Deleting...' : "Delete"}
-        </button>
+        { user && user.id === idea.user ? <>
+            {/* Edit button */}
+            <Link to='/ideas/$ideaId/edit'
+                  params={{ ideaId }}
+                  className="inline-block text-sm bg-yellow-500 hover:bg-yellow-600 text-white mt-4 mr-2 px-4 py-2 rounded transition"
+            >
+                Edit
+            </Link>
+            {/* Delete button */}
+            <button
+                onClick={ handleDelete }
+                disabled={ isPending }
+                className="text-sm bg-red-600 hover:bg-red-700 text-white mt-4 px-4 py-2 rounded transition disabled:opacity-50">
+                { isPending ? 'Deleting...' : "Delete"}
+            </button>
+        </> :
+            <p className="text-sm text-gray-400">
+                Owned by: { idea.user }
+            </p>
+        }
     </div>
 }
