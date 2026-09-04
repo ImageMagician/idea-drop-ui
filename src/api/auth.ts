@@ -34,7 +34,7 @@ export const loginUser = async (
         return res.data;
     }
     catch (err: any) {
-        const message = err.response?.data?.message || 'Failed to login';
+        const message = err.response?.data?.message || 'Failed to login.';
         throw new Error(message);
     }
 }
@@ -44,7 +44,18 @@ export const logoutUser = async () => {
         await api.post("/auth/logout");
     }
     catch (err: any) {
-        const message = err.response?.data?.message || 'Failed to logout';
+        const message = err.response?.data?.message || 'Failed to logout.';
+        throw new Error(message);
+    }
+}
+
+export const refreshAccessToken = async () => {
+    try {
+        const res = await api.post("/auth/refresh");
+        return res.data;
+    }
+    catch (err: any) {
+        const message = err.response?.data?.message || 'Failed to refresh access token.';
         throw new Error(message);
     }
 }
